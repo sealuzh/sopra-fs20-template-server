@@ -2,16 +2,20 @@ package ch.uzh.ifi.seal.soprafs20.entity;
 
 import ch.uzh.ifi.seal.soprafs20.constant.UserStatus;
 
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
+/**
+ * Internal User Representation
+ * This class composes the internal representation of the user and defines how the user is stored in the database.
+ * Every variable will be mapped into a database field with the @Column annotation
+ * - nullable = false -> this cannot be left empty
+ * - unique = true -> this value must be unqiue across the database -> composes the primary key
+ */
 @Entity
+@Table(name = "USER")
 public class User implements Serializable {
-	
 
 	private static final long serialVersionUID = 1L;
 
@@ -71,13 +75,20 @@ public class User implements Serializable {
 		this.status = status;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (o == this) return true;
-		if (!(o instanceof User)) {
-			return false;
-		}
-		User user = (User) o;
-		return this.getId().equals(user.getId());
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return getId().equals(user.getId()) &&
+                getName().equals(user.getName()) &&
+                getUsername().equals(user.getUsername()) &&
+                Objects.equals(getToken(), user.getToken()) &&
+                getStatus() == user.getStatus();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getUsername(), getToken(), getStatus());
+    }
 }
