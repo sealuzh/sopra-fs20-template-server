@@ -34,17 +34,22 @@ public class UserServiceIntegrationTest {
 
     @Test
     public void createUser_validInputs_success() {
+        // given
         assertNull(userRepository.findByUsername("testUsername"));
 
         User testUser = new User();
         testUser.setName("testName");
         testUser.setUsername("testUsername");
 
+        // when
         User createdUser = userService.createUser(testUser);
 
+        // then
+        assertEquals(testUser.getId(), createdUser.getId());
+        assertEquals(testUser.getName(), createdUser.getName());
+        assertEquals(testUser.getUsername(), createdUser.getUsername());
         assertNotNull(createdUser.getToken());
         assertEquals(UserStatus.ONLINE, createdUser.getStatus());
-        assertEquals(createdUser, userRepository.findByToken(createdUser.getToken()));
     }
 
     @Test
@@ -67,6 +72,5 @@ public class UserServiceIntegrationTest {
         String exceptionMessage = "The username provided is not unique. Therefore, the user could not be created!";
         SopraServiceException exception = assertThrows(SopraServiceException.class, () -> userService.createUser(testUser2), exceptionMessage);
         assertEquals(exceptionMessage, exception.getMessage());
-
     }
 }
