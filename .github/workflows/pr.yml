@@ -1,4 +1,4 @@
-name: deploy
+name: Test Project
 
 on:
   pull_request:
