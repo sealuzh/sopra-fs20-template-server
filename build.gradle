@@ -7,11 +7,6 @@ plugins {
     id "org.sonarqube" version "2.8"
 }
 
-jacoco {
-    toolVersion = "0.8.5"
-    reportsDir = file("$buildDir/jacocoReportDir")
-}
-
 group 'ch.uzh.ifi.seal'
 version '1.0.0'
 
@@ -61,6 +56,13 @@ test {
     maxParallelForks = 1
 }
 
+test.finalizedBy jacocoTestReport
+
+jacoco {
+    toolVersion = "0.8.5"
+    reportsDir = file("$buildDir/jacocoReportDir")
+}
+
 jacocoTestReport {
     group = "Reporting"
     reports {
@@ -78,9 +80,6 @@ if (secretPropsFile.exists()) {
         ext[name] = value
     }
 }
-//else {
-//    throw new IllegalStateException("local.properties could not be located for build process")
-//}
 
 sonarqube {
     properties {
@@ -91,6 +90,10 @@ sonarqube {
         property "sonar.coverage.jacoco.xmlReportPaths", ["$buildDir/jacocoReportDir/test/jacocoTestReport.xml"]
         property "sonar.cpd.exclusions", "**/entity/*.java,**/rest/dto/*.java"
     }
+}
+
+project.tasks["sonarqube"].dependsOn {
+    test
 }
 
 defaultTasks 'bootJar', 'build'
