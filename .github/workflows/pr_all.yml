@@ -1,0 +1,27 @@
+name: PR (Java 11-13 on Mac/Win/Linux)
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # fail-fast allows other runs to continue even if another one fails
+      fail-fast: false
+      # max number of parallel runners
+      max-parallel: 2
+      # test java versions 11, 12, 13
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        java: [11, 12, 13]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: ${{ matrix.java }}
+    - name: build & test with gradle
+      run: ./gradlew build
