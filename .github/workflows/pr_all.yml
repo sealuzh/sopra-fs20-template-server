@@ -15,7 +15,7 @@ jobs:
       # test java versions 11, 12, 13
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
-        java: [11, 12, 13]
+        java: [13]
 
     steps:
     - uses: actions/checkout@v2
